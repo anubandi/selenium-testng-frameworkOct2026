@@ -1,5 +1,7 @@
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -24,9 +26,11 @@ public class BaseTest {
     protected InventoryPage inventoryPage;
     protected static ExtentReports extent = ExtentManager.getInstance();
     protected ExtentTest test;
+    private static final Logger log = LogManager.getLogger(BaseTest.class);
 
     @BeforeMethod(alwaysRun = true)
     public void setUp(Method method) {
+        log.info("Starting test: {}", method.getName());
         test = extent.createTest(method.getName());
         String browser = ConfigReader.get("browser");
         switch (browser.toLowerCase()) {
@@ -40,6 +44,7 @@ public class BaseTest {
                 driver = new ChromeDriver(options);
             }
         }
+        log.info("Browser: {}", browser);
         driver.manage().window().maximize();
         loginPage = new LoginPage(driver);
         inventoryPage = new InventoryPage(driver);
@@ -48,15 +53,18 @@ public class BaseTest {
     @AfterMethod(alwaysRun = true)
     public void tearDown(ITestResult result) {
         if (result.getStatus() == ITestResult.FAILURE) {
+            log.error("Test FAILED: {}", result.getName(), result.getThrowable());
             String path = takeScreenshot(result.getName());
             test.fail(result.getThrowable());
             if (path != null) {
                 test.addScreenCaptureFromPath(path);
             }
         } else if (result.getStatus() == ITestResult.SUCCESS) {
+            log.info("Test finished: {}", result.getName());
             test.pass("Test passed");
         } else {
             test.skip("Test skipped");
+            log.info("Test finished: {}", result.getName());
         }
         driver.quit();
     }
