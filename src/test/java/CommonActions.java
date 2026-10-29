@@ -35,9 +35,11 @@ public class CommonActions {
     }
 
     public boolean isVisible(By locator) {
+        log.info("Checking visibility of {}", locator);
         try {
             return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).isDisplayed();
         } catch (TimeoutException e) {
+            log.warn("Element not visible: {}", locator);
             return false;
         }
     }
