@@ -50,15 +50,32 @@ public class BaseTest {
         inventoryPage = new InventoryPage(driver);
     }
 
+//    @AfterMethod(alwaysRun = true)
+//    public void tearDown(ITestResult result) {
+//        if (result.getStatus() == ITestResult.FAILURE) {
+//            log.error("Test FAILED: {}", result.getName(), result.getThrowable());
+//            String path = takeScreenshot(result.getName());
+//            test.fail(result.getThrowable());
+//            if (path != null) {
+//                test.addScreenCaptureFromPath(path);
+//            }
+//        } else if (result.getStatus() == ITestResult.SUCCESS) {
+//            log.info("Test finished: {}", result.getName());
+//            test.pass("Test passed");
+//        } else {
+//            test.skip("Test skipped");
+//            log.info("Test finished: {}", result.getName());
+//        }
+//        driver.quit();
+//    }
+
     @AfterMethod(alwaysRun = true)
     public void tearDown(ITestResult result) {
         if (result.getStatus() == ITestResult.FAILURE) {
-            log.error("Test FAILED: {}", result.getName(), result.getThrowable());
-            String path = takeScreenshot(result.getName());
+            takeScreenshot(result.getName());   // still saves the .png file
+            String base64 = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64);
             test.fail(result.getThrowable());
-            if (path != null) {
-                test.addScreenCaptureFromPath(path);
-            }
+            test.addScreenCaptureFromBase64String(base64, "Failure screenshot");
         } else if (result.getStatus() == ITestResult.SUCCESS) {
             log.info("Test finished: {}", result.getName());
             test.pass("Test passed");
