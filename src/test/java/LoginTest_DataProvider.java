@@ -22,7 +22,7 @@ public class LoginTest_DataProvider extends BaseTest {
     @DataProvider(name = "invalidCredentials")
     public Object[][] invalidCredentials() {
         return new Object[][] {
-                {"standard_user", "wrong_password", "do not match"},
+                {"standard_user", "wrong_password", "Do not match"},
                 {"wrong_user", "secret_sauce", "do not match"},
                 {"", "", "Username is required"},
                 {"standard_user", "", "Password is required"}
