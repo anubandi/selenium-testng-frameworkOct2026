@@ -80,7 +80,7 @@ public class BaseTest {
             File dest = new File("screenshots/" + testName + "_" + System.currentTimeMillis() + ".png");
             dest.getParentFile().mkdirs();
             Files.copy(src.toPath(), dest.toPath());
-            return dest.getAbsolutePath();
+            return "../screenshots/" + dest.getName();
         } catch (IOException e) {
             System.out.println("Could not save screenshot: " + e.getMessage());
             return null;
